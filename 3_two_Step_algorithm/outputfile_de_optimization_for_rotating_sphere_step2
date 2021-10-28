@@ -1,0 +1,44 @@
+number of evaluation points = 200
+permitivity = 7.99995
+permeability = 1
+Radius of sphere = 1
+True beta value = 0.008
+Angle of incidence = 1.5708
+beta minimum = -1
+beta maximum = 1
+epsilonr minimum = 0
+epsilonr maximum = 0
+maximum number of iterations = 100
+maximum number of iterations without improvement = 10
+error tolerance without improvement = 0.01
+population size = 10
+SNR = 40
+Iteration number: 0		Current minimal cost: 9.5888103882017534e-03		Best agent: -1.1270806674756884e-04 
+Iteration number: 1		Current minimal cost: 9.5888103882017534e-03		Best agent: -1.1270806674756884e-04 
+Iteration number: 2		Current minimal cost: 9.5888103882017534e-03		Best agent: -1.1270806674756884e-04 
+Iteration number: 3		Current minimal cost: 9.5888103882017534e-03		Best agent: -1.1270806674756884e-04 
+Iteration number: 4		Current minimal cost: 9.5888103882017534e-03		Best agent: -1.1270806674756884e-04 
+Iteration number: 5		Current minimal cost: 1.1341499289283354e-03		Best agent: 1.0783353710850596e-02 
+Iteration number: 6		Current minimal cost: 1.1341499289283354e-03		Best agent: 1.0783353710850596e-02 
+Iteration number: 7		Current minimal cost: 1.0769408017678487e-03		Best agent: 1.0711991465185502e-02 
+Iteration number: 8		Current minimal cost: 1.0032439027794161e-03		Best agent: 5.3775067654530974e-03 
+Iteration number: 9		Current minimal cost: 1.0032439027794161e-03		Best agent: 5.3775067654530974e-03 
+Iteration number: 10		Current minimal cost: 7.2620316399509824e-04		Best agent: 5.7696431604547377e-03 
+Iteration number: 11		Current minimal cost: 2.0401906329385860e-04		Best agent: 9.1719793600656303e-03 
+Iteration number: 12		Current minimal cost: 9.1122600233611823e-05		Best agent: 7.2194629050335354e-03 
+Iteration number: 13		Current minimal cost: 4.2941046473980427e-05		Best agent: 7.4734089969991455e-03 
+Iteration number: 14		Current minimal cost: 6.2438970093264119e-06		Best agent: 7.8466168907220680e-03 
+Iteration number: 15		Current minimal cost: 2.9594504322312683e-06		Best agent: 7.9837414207166221e-03 
+Iteration number: 16		Current minimal cost: 2.9594504322312683e-06		Best agent: 7.9837414207166221e-03 
+Iteration number: 17		Current minimal cost: 2.9377940004728764e-06		Best agent: 7.9912966114986297e-03 
+Iteration number: 18		Current minimal cost: 2.9377940004728764e-06		Best agent: 7.9912966114986297e-03 
+Iteration number: 19		Current minimal cost: 2.9377940004728764e-06		Best agent: 7.9912966114986297e-03 
+Iteration number: 20		Current minimal cost: 2.9377940004728764e-06		Best agent: 7.9912966114986297e-03 
+Iteration number: 21		Current minimal cost: 2.9377940004728764e-06		Best agent: 7.9912966114986297e-03 
+Iteration number: 22		Current minimal cost: 2.9377940004728764e-06		Best agent: 7.9912966114986297e-03 
+Iteration number: 23		Current minimal cost: 2.9327782803906428e-06		Best agent: 7.9958482246230561e-03 
+Iteration number: 24		Current minimal cost: 2.9324483674548261e-06		Best agent: 7.9973764464551320e-03 
+Terminated due to positive evaluation of the termination condition.
+Number of cost function evaluations = 260
+solution for beta = 7.9973764464551320e-03
+error in beta = 3.2794419310851718e-04

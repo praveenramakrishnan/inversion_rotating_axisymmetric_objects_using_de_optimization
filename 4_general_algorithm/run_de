@@ -1,0 +1,133 @@
+#!/bin/bash  
+
+#Author: Praveen Kalarickel Ramakrishnan
+#Date: 2021-10-26
+#This script is used for the recreation of the rotating speed
+#of homogeneous sphere.
+#This is done through the following steps
+# 1) Generate the set of points on which the fields are to be calculated.
+# 2) Use the De Zutter algorithm to create the actual solution for the forward problem
+#    on the specified points.
+# 3) Add noise of specified SNR level to the fields.
+# 4) Use the Differential Evolution algorithm to invert the scattered field data to get back the speed.
+
+#Parameter definition
+N_points=200
+plane_of_circle=3 #1 for xy plane, 2 for yz plane, 3 for xz plane
+radius_measurement=1.5
+outputfilename_points='name_of_the_file_of_points_along_circle_xzplane'
+
+#Parameters related to the forward analytic solution
+mu_r=1.0
+epsilon_r=8.0
+R_sphere=1.0
+frequency=50e6
+beta=8e-3
+theta_i=1.5707963267948966
+outputfilename_forward_sol_Efield='E_along_xz_plane_mu_'$mu_r'_eps_'$epsilon_r'_thetai_'$theta_i'_beta_'$beta'_frequency'_$frequency'.txt'
+outputfilename_forward_sol_Hfield='H_along_xz_plane_mu_'$mu_r'_eps_'$epsilon_r'_thetai_'$theta_i'_beta_'$beta'_frequency'_$frequency'.txt'
+
+#Parameters related to adding gaussian noise to the forward solution
+SNR_in_db=40
+#singal_level_Efield=1.0
+#signal_level_Hfield=0.002654e0
+outputfilename_forward_sol_Efield_noisy='noisy_E_along_xz_plane_mu_'$mu_r'_eps_'$epsilon_r'_thetai_'$theta_i'_beta_'$beta'_frequency'_$frequency'.txt'
+outputfilename_forward_sol_Hfield_noisy='noisy_H_along_xz_plane_mu_'$mu_r'_eps_'$epsilon_r'_thetai_'$theta_i'_beta_'$beta'_frequency'_$frequency'.txt'
+
+#Parameters related to optimization for inversion
+problem_type=2 # select 0 for only beta as unknown, 1 for only epsilon_r as unknown and 2 for both beta and epsilon_r unknown
+beta_min=-1.0
+beta_max=1.0
+epsilonr_min=1.0
+epsilonr_max=20.0
+population_size_de_opt=10
+max_num_iters_de_opt=100
+max_num_iters_without_improvement=10
+tolerance_error_without_improvement=1.0e-2
+
+#Compilation
+cp source_files/main_generate_points_along_circle.cpp .
+g++ -lm -Wall -o main_generate_points_along_circle.o main_generate_points_along_circle.cpp
+
+cp source_files/main_rotating_sphere_dezutter_analytic_solution.o .
+
+cp source_files/main_add_gaussian_noise.cpp .
+g++ -o main_add_gaussian_noise.o main_add_gaussian_noise.cpp
+
+cp source_files/main_de_optimization_for_rotating_sphere.cpp .
+cp -r source_files/de .
+g++ -o main_de_optimization_for_rotating_sphere.o main_de_optimization_for_rotating_sphere.cpp
+
+#Execution
+
+echo "Execution phase"
+
+#Generate the set of points
+echo $N_points > inputfile_points
+echo $plane_of_circle >> inputfile_points
+echo $radius_measurement >> inputfile_points
+echo $outputfilename_points >> inputfile_points
+time ./main_generate_points_along_circle.o < inputfile_points
+
+#Obtain the analytic solution for forward problem
+echo $mu_r > inputfile_analytic_sol
+echo $epsilon_r >> inputfile_analytic_sol
+echo $R_sphere >> inputfile_analytic_sol
+echo $frequency >> inputfile_analytic_sol
+echo $beta >> inputfile_analytic_sol
+echo $theta_i >> inputfile_analytic_sol
+echo $outputfilename_points >> inputfile_analytic_sol
+echo $outputfilename_forward_sol_Efield >> inputfile_analytic_sol
+echo $outputfilename_forward_sol_Hfield >> inputfile_analytic_sol
+
+time ./main_rotating_sphere_dezutter_analytic_solution.o < inputfile_analytic_sol
+
+#add gaussian noise to the fields
+echo $outputfilename_forward_sol_Efield > inputfile_add_gaussian_noise_efield
+echo $SNR_in_db >> inputfile_add_gaussian_noise_efield
+#echo $singal_level_Efield >> inputfile_add_gaussian_noise_efield
+echo $outputfilename_forward_sol_Efield_noisy >> inputfile_add_gaussian_noise_efield
+
+time ./main_add_gaussian_noise.o < inputfile_add_gaussian_noise_efield
+
+echo $outputfilename_forward_sol_Hfield > inputfile_add_gaussian_noise_hfield
+echo $SNR_in_db >> inputfile_add_gaussian_noise_hfield
+#echo $signal_level_Hfield >> inputfile_add_gaussian_noise_hfield
+echo $outputfilename_forward_sol_Hfield_noisy >> inputfile_add_gaussian_noise_hfield
+
+time ./main_add_gaussian_noise.o < inputfile_add_gaussian_noise_hfield
+
+#Optimization for the inversion
+echo $problem_type > inputfile_de_optimization_for_rotating_sphere
+echo $beta_min >> inputfile_de_optimization_for_rotating_sphere
+echo $beta_max >> inputfile_de_optimization_for_rotating_sphere
+echo $epsilonr_min >> inputfile_de_optimization_for_rotating_sphere
+echo $epsilonr_max >> inputfile_de_optimization_for_rotating_sphere
+echo $max_num_iters_de_opt >> inputfile_de_optimization_for_rotating_sphere
+echo $max_num_iters_without_improvement >> inputfile_de_optimization_for_rotating_sphere
+echo $tolerance_error_without_improvement >> inputfile_de_optimization_for_rotating_sphere
+echo $population_size_de_opt >> inputfile_de_optimization_for_rotating_sphere
+echo $N_points >> inputfile_de_optimization_for_rotating_sphere
+echo $outputfilename_forward_sol_Efield_noisy >> inputfile_de_optimization_for_rotating_sphere
+echo $outputfilename_forward_sol_Hfield_noisy >> inputfile_de_optimization_for_rotating_sphere
+
+echo $mu_r >> inputfile_de_optimization_for_rotating_sphere
+echo $epsilon_r >> inputfile_de_optimization_for_rotating_sphere
+echo $R_sphere >> inputfile_de_optimization_for_rotating_sphere
+echo $frequency >> inputfile_de_optimization_for_rotating_sphere
+echo $beta >> inputfile_de_optimization_for_rotating_sphere
+echo $theta_i >> inputfile_de_optimization_for_rotating_sphere
+echo $outputfilename_points >> inputfile_de_optimization_for_rotating_sphere
+echo $SNR_in_db >> inputfile_de_optimization_for_rotating_sphere
+
+time ./main_de_optimization_for_rotating_sphere.o < inputfile_de_optimization_for_rotating_sphere > outputfile_de_optimization_for_rotating_sphere
+
+#cleaning 
+rm inputfile*
+rm *.o
+rm main_generate_points_along_circle.cpp 
+rm main_add_gaussian_noise.cpp 
+rm main_de_optimization_for_rotating_sphere.cpp 
+rm -r de 
+
+echo "Simulation complete"
